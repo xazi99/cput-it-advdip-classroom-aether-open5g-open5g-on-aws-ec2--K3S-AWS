@@ -469,3 +469,25 @@ aws ec2 modify-instance-metadata-options \
 ### Private Registry (Amazon ECR)
 
 See `registries.yml` for the ECR configuration. The recommended approach on EC2 is to attach the `AmazonEC2ContainerRegistryReadOnly` IAM policy to the instance profile — no static credentials are needed.
+
+
+### EDITED PART
+### Architecture Explanation 
+### What is k3s and why was it used?
+k3s is a lightweight Kubernetes distribution developed by Rancher. It is designed to run Kubernetes with reduced resource consumption by simplifying components such as the control plane and using a smaller binary. k3s is well suited for learning environments, edge computing, and cloud deployments where simplicity and efficiency are required.
+
+In this assignment, k3s was chosen instead of a full Kubernetes distribution to reduce infrastructure costs, simplify installation, and allow the cluster to run efficiently on small AWS EC2 instances while still providing core Kubernetes functionality
+## Key Components
+# Control Plane
+The control plane node is responsible for managing the Kubernetes cluster. It runs the Kubernetes API server, scheduler, and controller manager. In this deployment, a single EC2 instance acts as the k3s control plane, providing cluster management and coordination of workloads.
+# Agent (Worker) Nodes
+Agent nodes, also known as worker nodes, are responsible for running application workloads in the form of pods. These nodes communicate with the control plane and execute containerized applications. In this deployment, one agent node was successfully joined to the cluster and appears with a <none> role, which is normal for Kubernetes worker nodes.
+# Container Runtime
+k3s uses containerd as its container runtime. Containerd is responsible for downloading container images and running containers on each node. It is lightweight and efficient, making it suitable for k3s deployments.
+# CNI (Container Networking Interface)
+Networking in the cluster is provided through a Container Networking Interface (CNI). k3s uses Flannel as the default CNI, which enables pod-to-pod communication across nodes within the cluster.
+# Ingress / Load Balancer
+k3s includes Traefik as the default ingress controller. Traefik manages inbound traffic to services running inside the Kubernetes cluster and provides basic load balancing functionality.
+# Storage Approach
+For storage, k3s uses the local-path-provisioner by default. This provides simple local storage on each node and is suitable for development and learning environments. It is not intended for high-availability production storage but is sufficient for this assignment.
+
